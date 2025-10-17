@@ -14,6 +14,14 @@ jobs:
       - name: Clone void-packages
         run: git clone --depth=1 https://github.com/void-linux/void-packages.git
 
+      # This step caches the build environment to significantly speed up runs.
+      - name: Cache hostdir
+        id: cache-hostdir
+        uses: actions/cache@v4
+        with:
+          path: void-packages/hostdir
+          key: ${{ runner.os }}-xbps-hostdir-${{ hashFiles('void-packages/common/shlibs') }}
+
       - name: Install prerequisites
         run: |
           sudo apt-get update
@@ -24,13 +32,19 @@ jobs:
           wget https://repo-default.voidlinux.org/static/xbps-static-latest.x86_64-musl.tar.xz
           tar xvf xbps-static-latest.x86_64-musl.tar.xz
           sudo install -Dm755 usr/bin/* /usr/local/bin/
-          
+      
+      # This step creates the build environment only if it wasn't restored from cache.
       - name: Bootstrap XBPS-src
         if: steps.cache-hostdir.outputs.cache-hit != 'true'
         working-directory: void-packages
         run: |
           export XBPS_ARCH=x86_64
           ./xbps-src binary-bootstrap
+
+      # This new step updates the build environment. It's the key fix for the 'build_style=none' error.
+      - name: Update Bootstrap Environment
+        working-directory: void-packages
+        run: ./xbps-src bootstrap-update
 
       - name: Copy templates
         run: |
@@ -40,6 +54,9 @@ jobs:
       - name: Allow restricted packages
         working-directory: void-packages
         run: echo XBPS_ALLOW_RESTRICTED=yes >> etc/conf
+
+      # --- Build and Index Steps ---
+      # The repository is now re-indexed after each package build.
 
       - name: Build dart-sass
         working-directory: void-packages
@@ -53,12 +70,20 @@ jobs:
         working-directory: void-packages
         run: ./xbps-src pkg ignis
 
+      - name: Index local repository
+        working-directory: void-packages
+        run: xbps-rindex -a hostdir/binpkgs/*.xbps
+
       - name: Build ignis-gvc
         working-directory: void-packages
         run: ./xbps-src pkg ignis-gvc
 
+      - name: Finalize repository index
+        working-directory: void-packages
+        run: xbps-rindex -a hostdir/binpkgs/*.xbps
+
       - name: Upload built packages
         uses: actions/upload-artifact@v4
         with:
-          name: exo
+          name: exo-packages
           path: void-packages/hostdir/binpkgs/*.xbps
