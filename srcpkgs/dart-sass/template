@@ -25,7 +25,7 @@ distfiles=(
     "https://github.com/sass/sass/archive/embedded-protocol-${_sass_version}.tar.gz>sass-embedded-${_sass_version}.tar.gz"
 )
 checksum=(
-    "06e57b07907572d4c09d6e4d7e97d413346f00155a0cf0c406deec6a1170942e"
+    "27b25993e259c57276668936b8f99509978039ebb8909f26dd32e40805b3583f"
     "3e62f0f8a85f818b2839d39c016e78cf8ca210e7555dd54a86b36a798544c9b1"
 )
 
