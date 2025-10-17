@@ -1,0 +1,61 @@
+# Template file for 'dart-sass'
+pkgname=dart-sass
+version=1.93.2
+revision=1
+build_style=none # Custom build steps are required
+short_desc="Sass makes CSS fun again"
+maintainer="n3ptune-plan3t <n3ptune@plan3t>"
+homepage="http://sass-lang.com/"
+license="MIT"
+hostmakedepends=(
+    "git"
+    "dart"
+    "buf"
+    "pkg-config"
+)
+provides="sass"
+conflicts="ruby-sass"
+nostrip=yes
+
+# This package requires two separate sources from GitHub.
+# We define the version for the second source and download both as tarballs.
+_sass_version=3.2.0
+distfiles=(
+    "https://github.com/sass/dart-sass/archive/${version}.tar.gz>dart-sass-${version}.tar.gz"
+    "https://github.com/sass/sass/archive/embedded-protocol-${_sass_version}.tar.gz>sass-embedded-${_sass_version}.tar.gz"
+)
+checksum=(
+    "06e57b07907572d4c09d6e4d7e97d413346f00155a0cf0c406deec6a1170942e"
+    "3e62f0f8a85f818b2839d39c016e78cf8ca210e7555dd54a86b36a798544c9b1"
+)
+
+wrksrc="dart-sass-${version}"
+
+# This corresponds to the 'prepare()' function in the PKGBUILD.
+do_configure() {
+    # The second source must be linked into the primary source's build directory.
+    mkdir -p build
+    ln -sf "${masterdir}/sass-embedded-${_sass_version}" build/language
+
+    # Disable analytics and fetch dart dependencies.
+    dart --disable-analytics
+    dart pub get
+}
+
+# This corresponds to the 'build()' function in the PKGBUILD.
+do_build() {
+    UPDATE_SASS_PROTOCOL=false dart run grinder protobuf
+    dart compile exe \
+        -Dversion=${version} \
+        -Dprotocol-version=$(cat build/language/spec/EMBEDDED_PROTOCOL_VERSION) \
+        -o sass \
+        bin/sass.dart
+}
+
+# This corresponds to the 'package()' function in the PKGBUILD.
+do_install() {
+    vinstall -Dm755 sass "${DESTDIR}/usr/bin/"
+    vinstall -Dm644 build/language/spec/embedded_sass.proto \
+        "${DESTDIR}/usr/share/${pkgname}/embedded_sass.proto"
+    vinstall -Dm644 LICENSE "${DESTDIR}/usr/share/licenses/${pkgname}/LICENSE"
+}
