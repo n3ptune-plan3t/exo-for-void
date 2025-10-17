@@ -1,0 +1,20 @@
+# Template file for 'ignis-gvc'
+pkgname=ignis-gvc
+version=0.1.0
+revision=1
+build_style=meson
+short_desc="A standalone libgvc for Ignis"
+maintainer="n3ptune-plan3t <n3ptune@plan3t>"
+homepage="https://github.com/ignis-sh/ignis-gvc"
+license="MIT"
+hostmakedepends=(
+    "gobject-introspection-devel"
+    "meson"
+    "pkg-config"
+)
+makedepends=(
+    "glib-devel"
+    "libpulseaudio-devel"
+)
+distfiles="$homepage/releases/download/v${version}/ignis-gvc-v${version}.tar.gz"
+checksum=a6421c00f227c0f041ca07a0fc0933a20b6fc8b449265a47ca887c456b0d3c96
