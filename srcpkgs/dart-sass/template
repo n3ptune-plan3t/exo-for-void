@@ -2,7 +2,6 @@
 pkgname=dart-sass
 version=1.93.2
 revision=1
-build_style=none # Custom build steps are required
 short_desc="Sass makes CSS fun again"
 maintainer="n3ptune-plan3t <n3ptune@plan3t>"
 homepage="http://sass-lang.com/"
