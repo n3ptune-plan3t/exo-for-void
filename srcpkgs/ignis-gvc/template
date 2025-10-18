@@ -8,13 +8,13 @@ maintainer="n3ptune-plan3t <n3ptune@plan3t>"
 homepage="https://github.com/ignis-sh/ignis-gvc"
 license="MIT"
 hostmakedepends=(
-    "gobject-introspection-devel"
+    "gobject-introspection"
     "meson"
     "pkg-config"
 )
 makedepends=(
     "glib-devel"
-    "libpulseaudio-devel"
+    "pulseaudio-devel"
 )
 distfiles="$homepage/releases/download/v${version}/ignis-gvc-v${version}.tar.gz"
 checksum=a6421c00f227c0f041ca07a0fc0933a20b6fc8b449265a47ca887c456b0d3c96
