@@ -58,13 +58,13 @@ jobs:
       # --- Build and Index Steps ---
       # The repository is now re-indexed after each package build.
 
-      - name: Build dart-sass
-        working-directory: void-packages
-        run: ./xbps-src pkg dart-sass
+      # - name: Build dart-sass
+      #   working-directory: void-packages
+      #   run: ./xbps-src pkg dart-sass
 
-      - name: Index local repository
-        working-directory: void-packages
-        run: xbps-rindex -a hostdir/binpkgs/*.xbps
+      # - name: Index local repository
+      #   working-directory: void-packages
+      #   run: xbps-rindex -a hostdir/binpkgs/*.xbps
 
       - name: Build ignis
         working-directory: void-packages
