@@ -7,7 +7,8 @@ maintainer="n3ptune-plan3t <n3ptune@plan3t>"
 homepage="http://sass-lang.com/"
 license="MIT"
 hostmakedepends=(
-    "git"
+    "git" }
+makedepends={
     "dart"
     "buf"
     "pkg-config"
